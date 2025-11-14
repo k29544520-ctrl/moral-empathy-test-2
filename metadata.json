@@ -1,0 +1,5 @@
+{
+  "name": "공감 유형 진단 검사 (Empathy Type Test)",
+  "description": "20가지 문항을 통해 당신의 공감 유형(FA, TA, FP, TP)을 진단하는 웹 애플리케이션입니다. 자신의 공감 스타일을 이해하고 다른 사람과의 관계를 개선하는 데 도움을 받아보세요.",
+  "requestFramePermissions": []
+}
