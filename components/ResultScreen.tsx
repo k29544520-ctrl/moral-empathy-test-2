@@ -1,6 +1,6 @@
-
 import React from 'react';
 import { Result, EmpathyType } from '../types';
+import { TYPE_DESCRIPTIONS } from '../constants';
 
 interface ResultScreenProps {
   result: Result;
@@ -28,6 +28,13 @@ const ResultScreen: React.FC<ResultScreenProps> = ({ result, onRestart }) => {
           "{interpretation}"
         </p>
         
+        <div className="my-8 text-left p-4 bg-slate-50 rounded-lg border border-slate-200">
+            <h3 className="text-lg font-bold mb-2 text-slate-800">유형 설명</h3>
+            <p className="text-slate-600 leading-relaxed">
+                {TYPE_DESCRIPTIONS[finalType]}
+            </p>
+        </div>
+
         <div className="my-8 text-left">
           <h3 className="text-lg font-bold mb-4 text-center">유형별 점수</h3>
           {Object.entries(scores).map(([type, score]) => {

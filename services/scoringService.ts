@@ -13,7 +13,8 @@ export const calculateResults = (answers: number[]): Result => {
   answers.forEach((answer, index) => {
     if (answer > 0) {
       const question = QUESTIONS[index];
-      scores[question.type] += answer;
+      const score = question.reverse ? 6 - answer : answer;
+      scores[question.type] += score;
     }
   });
 

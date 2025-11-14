@@ -9,7 +9,7 @@ interface LikertScaleProps {
 
 const LikertScale: React.FC<LikertScaleProps> = ({ selectedValue, onSelect }) => {
   return (
-    <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4 my-8">
+    <div className="flex flex-col sm:flex-row justify-around items-center space-y-4 sm:space-y-0 my-8">
       {LIKERT_LABELS.map((label, index) => {
         const value = index + 1;
         const isSelected = selectedValue === value;

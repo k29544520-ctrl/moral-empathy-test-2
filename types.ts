@@ -10,6 +10,7 @@ export interface Question {
   id: number;
   text: string;
   type: EmpathyType;
+  reverse?: boolean;
 }
 
 export type Scores = {
