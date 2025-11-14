@@ -1,19 +1,21 @@
-
 import React, { useState, useCallback } from 'react';
 import StartScreen from './components/StartScreen';
 import QuestionnaireScreen from './components/QuestionnaireScreen';
 import ResultScreen from './components/ResultScreen';
-import { QUESTIONS } from './constants';
+import TieBreakerScreen from './components/TieBreakerScreen';
+import { QUESTIONS, INTERPRETATIONS } from './constants';
 import { calculateResults } from './services/scoringService';
-import { Result } from './types';
+import { Result, Scores, EmpathyType } from './types';
 
-type Screen = 'start' | 'questionnaire' | 'result';
+type Screen = 'start' | 'questionnaire' | 'result' | 'tieBreaker';
 
 const App: React.FC = () => {
   const [screen, setScreen] = useState<Screen>('start');
   const [answers, setAnswers] = useState<number[]>(new Array(QUESTIONS.length).fill(0));
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [result, setResult] = useState<Result | null>(null);
+  const [scores, setScores] = useState<Scores | null>(null);
+  const [tieBreakerOptions, setTieBreakerOptions] = useState<EmpathyType[]>([]);
 
   const handleStart = useCallback(() => {
     setScreen('questionnaire');
@@ -40,16 +42,40 @@ const App: React.FC = () => {
   }, [currentQuestionIndex]);
   
   const handleFinish = useCallback(() => {
-    const finalResult = calculateResults(answers);
-    setResult(finalResult);
-    setScreen('result');
+    const calculation = calculateResults(answers);
+    setScores(calculation.scores);
+
+    if (calculation.finalType) {
+      setResult({
+        scores: calculation.scores,
+        finalType: calculation.finalType,
+        interpretation: INTERPRETATIONS[calculation.finalType],
+      });
+      setScreen('result');
+    } else if (calculation.tieBreakerTypes) {
+      setTieBreakerOptions(calculation.tieBreakerTypes);
+      setScreen('tieBreaker');
+    }
   }, [answers]);
+
+  const handleTiebreakSelect = useCallback((selectedType: EmpathyType) => {
+    if (scores) {
+      setResult({
+        scores: scores,
+        finalType: selectedType,
+        interpretation: INTERPRETATIONS[selectedType],
+      });
+      setScreen('result');
+    }
+  }, [scores]);
 
   const handleRestart = useCallback(() => {
     setScreen('start');
     setAnswers(new Array(QUESTIONS.length).fill(0));
     setCurrentQuestionIndex(0);
     setResult(null);
+    setScores(null);
+    setTieBreakerOptions([]);
   }, []);
 
   const renderScreen = () => {
@@ -68,6 +94,8 @@ const App: React.FC = () => {
             onFinish={handleFinish}
           />
         );
+      case 'tieBreaker':
+        return <TieBreakerScreen options={tieBreakerOptions} onSelect={handleTiebreakSelect} />;
       case 'result':
         return result ? <ResultScreen result={result} onRestart={handleRestart} /> : null;
       default:
